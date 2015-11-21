@@ -1,6 +1,27 @@
 <resources>
     <string name="app_name">IIT Events</string>
 
-    <string name="hello_world">Hello world!</string>
+
+
+    <string name="hint_email">Email</string>
+    <string name="hint_ename">Event name</string>
+    <string name="hint_edate">Event date</string>
+    <string name="hint_time">Event time</string>
+    <string name="hint_loc">Location</string>
+    <string name="hint_dec">Description</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_name">Fullname</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="btn_register">REGISTER</string>
+    <string name="btn_link_to_register">Not a member? Sign up now.</string>
+    <string name="btn_link_to_login">Already registred! Login Me.</string>
+    <string name="welcome">Welcome</string>
+    <string name="btn_logout">LOGOUT</string>
+    <string name="name">Fullname</string>
+    <string name="create_Event">Create Event</string>
     <string name="action_settings">Settings</string>
+    <string name="successEventMessage">Event Registered!! Share QR</string>
+    <string name="serverIP">http://192.168.1.109/IITEvents/registerEvent.php</string>
+
+
 </resources>
