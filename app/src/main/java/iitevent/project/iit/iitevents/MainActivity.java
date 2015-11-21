@@ -1,5 +1,6 @@
-package iitevent.project.iit.iitevents;
 
+package iitevent.project.iit.iitevents;
+/*
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -34,4 +35,61 @@ public class MainActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+}
+*/
+
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.os.Bundle;
+import android.text.InputType;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.DatePicker;
+import android.widget.EditText;
+
+public class MainActivity extends Activity{
+
+    //UI References
+    private EditText fromDateEtxt;
+    private EditText toDateEtxt;
+
+    private DatePickerDialog fromDatePickerDialog;
+    private DatePickerDialog toDatePickerDialog;
+
+    private SimpleDateFormat dateFormatter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+    }
+
+    private void findViewsById() {
+        fromDateEtxt = (EditText) findViewById(R.id.etxt_fromdate);
+        fromDateEtxt.setInputType(InputType.TYPE_NULL);
+        fromDateEtxt.requestFocus();
+
+        toDateEtxt = (EditText) findViewById(R.id.etxt_todate);
+        toDateEtxt.setInputType(InputType.TYPE_NULL);
+    }
+
+
+
+  /*  @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }*/
+
+
 }

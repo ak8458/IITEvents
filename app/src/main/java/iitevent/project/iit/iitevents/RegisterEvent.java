@@ -1,30 +1,42 @@
 package iitevent.project.iit.iitevents;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.view.View.OnClickListener;
+import android.widget.TimePicker;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
  * Created by demo on 19-11-2015.
  */
 
-public class RegisterEvent extends Activity {
+public class RegisterEvent extends Activity{
     EditText eventName,eventDate,eventTime,eventDescription,eventLocation;
     String eveName,eveDate,eveTime,eveDescription,eveLocation;
+    private DatePickerDialog fromDatePickerDialog;
+    private TimePickerDialog toDatePickerDialog;
+    private SimpleDateFormat dateFormatter;
     private ProgressDialog pDialog;
     JSONParser jsonParser = new JSONParser();
     static final int DATE_DIALOG_ID = 0;
@@ -39,32 +51,68 @@ public class RegisterEvent extends Activity {
         setContentView(R.layout.event_reg_form);
         eventName=(EditText)findViewById(R.id.eventName);
         eventDate=(EditText)findViewById(R.id.eventDate);
+        eventDate.setInputType(InputType.TYPE_NULL);
+
         eventTime=(EditText)findViewById(R.id.eventTime);
+        eventDate.setInputType(InputType.TYPE_NULL);
+
         eventDescription=(EditText)findViewById(R.id.eventDescription);
         eventLocation=(EditText)findViewById(R.id.eventLocation);
         Button createEvent=(Button)findViewById(R.id.create_Event);
 
+        eventTime.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new TimePickerFragment();
+                newFragment.show(getFragmentManager(),"TimePicker");
+            }
+        });
+
+        eventDate.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getFragmentManager(),"DatePicker");
+            }
+        });
+        eventTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    DialogFragment newFragment = new TimePickerFragment();
+                    newFragment.show(getFragmentManager(), "TimePicker");
+                }
+            }
+        });
+
+        eventDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    DialogFragment newFragment = new DatePickerFragment();
+                    newFragment.show(getFragmentManager(),"DatePicker");
+                }
+            }
+        });
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                eveName=eventName.getText().toString();
-                eveTime=eventTime.getText().toString();
-                eveDate=eventDate.getText().toString();
-                eveDescription=eventDescription.getText().toString();
-                eveLocation=eventLocation.getText().toString();
+                eveName = eventName.getText().toString();
+                eveTime = eventTime.getText().toString();
+                eveDate = eventDate.getText().toString();
+                eveDescription = eventDescription.getText().toString();
+                eveLocation = eventLocation.getText().toString();
+                eveDate = eveDate + " " + eveTime;
                 Log.d("my date",eveDate);
                 new RegisterNewEvent().execute();
             }
         });
 
-        /*eventDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });*/
     }
+
+
 
     /**
      * Background Async Task to Create new product
@@ -93,7 +141,7 @@ public class RegisterEvent extends Activity {
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("ename", eveName));
-            params.add(new BasicNameValuePair("edate", "20/12/1989"));
+            params.add(new BasicNameValuePair("edate", eveDate));
             params.add(new BasicNameValuePair("location", eveLocation));
             params.add(new BasicNameValuePair("description", eveDescription));
 
