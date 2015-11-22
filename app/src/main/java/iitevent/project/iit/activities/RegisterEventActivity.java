@@ -1,4 +1,4 @@
-package iitevent.project.iit.iitevents;
+package iitevent.project.iit.activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -12,7 +12,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 
 import org.apache.http.NameValuePair;
@@ -20,18 +19,20 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.view.View.OnClickListener;
-import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+
+import iitevent.project.iit.helpers.DatePickerFragment;
+import iitevent.project.iit.helpers.JSONParser;
+import iitevent.project.iit.helpers.TimePickerFragment;
 
 /**
  * Created by demo on 19-11-2015.
  */
 
-public class RegisterEvent extends Activity{
+public class RegisterEventActivity extends Activity{
     EditText eventName,eventDate,eventTime,eventDescription,eventLocation;
     String eveName,eveDate,eveTime,eveDescription,eveLocation;
     private DatePickerDialog fromDatePickerDialog;
@@ -125,7 +126,7 @@ public class RegisterEvent extends Activity{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(RegisterEvent.this);
+            pDialog = new ProgressDialog(RegisterEventActivity.this);
             pDialog.setMessage("Regestering Event..");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
@@ -149,7 +150,7 @@ public class RegisterEvent extends Activity{
 
             // getting JSON Object
             // Note that create product url accepts POST method
-            JSONObject json = jsonParser.makeHttpRequest(getResources().getString(R.string.serverIP),
+            JSONObject json = jsonParser.makeHttpRequest("http://"+getResources().getString(R.string.serverIP)+"/IITEvents/registerEvent.php",
                     "POST", params);
 
             // check log cat fro response

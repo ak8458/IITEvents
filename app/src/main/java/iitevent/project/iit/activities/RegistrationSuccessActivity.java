@@ -1,4 +1,4 @@
-package iitevent.project.iit.iitevents;
+package iitevent.project.iit.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,9 +8,12 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import iitevent.project.iit.helpers.Contents;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
+
+import iitevent.project.iit.helpers.QRCodeEncoder;
 
 /**
  * Created by demo on 20-11-2015.

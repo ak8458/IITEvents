@@ -1,4 +1,4 @@
-package iitevent.project.iit.iitevents;
+package iitevent.project.iit.activities;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

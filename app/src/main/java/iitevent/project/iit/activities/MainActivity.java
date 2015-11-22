@@ -1,5 +1,5 @@
 
-package iitevent.project.iit.iitevents;
+package iitevent.project.iit.activities;
 /*
 import android.app.Activity;
 import android.os.Bundle;
@@ -40,18 +40,11 @@ public class MainActivity extends Activity {
 
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.DatePicker;
 import android.widget.EditText;
 
 public class MainActivity extends Activity{
