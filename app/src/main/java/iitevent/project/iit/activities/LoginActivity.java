@@ -129,6 +129,7 @@ public class LoginActivity extends Activity {
      * Background Async Task to Create new product
      * */
     class VerifyUser extends AsyncTask<Void, Void, Void> {
+        boolean internetConnection=true;
         /**0
          * Before starting background thread Show Progress Dialog
          * */
@@ -188,8 +189,8 @@ public class LoginActivity extends Activity {
             }
 
             else{
+                internetConnection=false;
 
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.InvalidEmail), Toast.LENGTH_LONG).show();
             }
             return null;
 
@@ -201,10 +202,16 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(Void file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
-            if(!userVerified)
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.InvalidCredential), Toast.LENGTH_LONG).show();
-            finish();
-
+            if(internetConnection) {
+                if (!userVerified) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.InvalidCredential), Toast.LENGTH_LONG).show();
+                } else {
+                    finish();
+                }
+            }
+            else{
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.noConnection), Toast.LENGTH_LONG).show();
+            }
         }
 
         private void showDialog() {
