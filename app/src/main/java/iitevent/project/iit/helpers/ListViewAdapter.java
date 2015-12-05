@@ -29,7 +29,7 @@ public class ListViewAdapter extends ArrayAdapter<Event> {
      *
      * @param context Acitivity object from where the adapter was called
      * @param resourceId resource to be used to display the list items
-     * @param eventDetailList list of QuoteDetail objects to be displayed
+     * @param eventDetailList list of EventDetail objects to be displayed
      */
     public ListViewAdapter(Context context, int resourceId,
                            List<Event> eventDetailList) {
@@ -72,6 +72,7 @@ public class ListViewAdapter extends ArrayAdapter<Event> {
             // Locate the ImageView in row_items
             holder.eventDate = (TextView) view.findViewById(R.id.eventDate);
             view.setTag(holder);
+
         } else {
             holder = (ViewHolder) view.getTag();
         }
