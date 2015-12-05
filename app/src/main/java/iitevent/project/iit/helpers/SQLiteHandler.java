@@ -2,6 +2,7 @@ package iitevent.project.iit.helpers;
 
 /**
  * Created by Dhruv on 19-Nov-15.
+ * This class is used to store the details of logged in user to SQLite database
  */
 import android.content.ContentValues;
 import android.content.Context;
