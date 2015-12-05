@@ -20,6 +20,10 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+/**
+ * @author Akshay Patil
+ * This class is used to perfom GET and POST requests to the server and parse the String buffer object to JASON response.
+ */
 public class JSONParser {
 
     static InputStream is = null;
