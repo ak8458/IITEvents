@@ -19,6 +19,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,23 +99,28 @@ public class RegisterEventActivity extends Activity{
         createEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean createEvent=true;
+                if(!eventName.getText().toString().trim().isEmpty() || !eventTime.getText().toString().trim().isEmpty()
+                        || !eventDescription.getText().toString().trim().isEmpty() || !eventDate.getText().toString().trim().isEmpty()
+                        || !eventLocation.getText().toString().trim().isEmpty()){
+                    //eventName.setError("Please enter Event Name");
+                    Toast.makeText(getApplicationContext(),getResources().getText(R.string.EnterAllDetailsMsg), Toast.LENGTH_LONG).show();
+                    createEvent=false;
+                }
 
-                eveName = eventName.getText().toString();
-                eveTime = eventTime.getText().toString();
-                eveDate = eventDate.getText().toString();
-                eveDescription = eventDescription.getText().toString();
-                eveLocation = eventLocation.getText().toString();
-                eveDate = eveDate + " " + eveTime;
-                Log.d("my date",eveDate);
-                new RegisterNewEvent().execute();
+                if(createEvent) {
+                    eveName = eventName.getText().toString();
+                    eveTime = eventTime.getText().toString();
+                    eveDate = eventDate.getText().toString();
+                    eveDescription = eventDescription.getText().toString();
+                    eveLocation = eventLocation.getText().toString();
+                    eveDate = eveDate + " " + eveTime;
+                    Log.d("my date", eveDate);
+                    new RegisterNewEvent().execute();
+                }
             }
         });
-
-
     }
-
-
-
     /**
      * Background Async Task to Create new product
      * */
@@ -153,8 +159,9 @@ public class RegisterEventActivity extends Activity{
             JSONObject json = jsonParser.makeHttpRequest("http://"+getResources().getString(R.string.serverIP)+"/IITEvents/registerEvent.php",
                     "POST", params);
 
-            // check log cat fro response
+
             if(json!=null) {
+                // check log cat fro response
                 Log.d("Create Response", json.toString());
 
                 // check for success tag
@@ -170,10 +177,9 @@ public class RegisterEventActivity extends Activity{
                         String eventLocation="Location: "+event.getString("location");
                         String eventDec="About: "+event.getString("description");
                         setIntent=eventID+"\n"+eventName +"\n"+eventdate +"\n"+eventLocation +"\n"+eventDec;
-                        Intent toSuccessEvent = new Intent(getApplicationContext(), RegistrationSuccessActivity.class);
+                        Intent toSuccessEvent = new Intent(getApplicationContext(), EventCreatedActivity.class);
                         toSuccessEvent.putExtra("qrInput",setIntent);
                         startActivity(toSuccessEvent);
-
                         // closing this screen
                         finish();
                     } else {
