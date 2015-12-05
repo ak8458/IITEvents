@@ -2,6 +2,7 @@ package iitevent.project.iit.helpers;
 
 /**
  * Created by Dhruv on 19-Nov-15.
+ * This class is used to store the shared preferences values for login activity.
  */
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,7 +23,7 @@ public class SessionManager {
     int PRIVATE_MODE = 0;
 
     // Shared preferences file name
-    private static final String PREF_NAME = "AndroidHiveLogin";
+    private static final String PREF_NAME = "ApplicationLogin";
 
     private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
 
