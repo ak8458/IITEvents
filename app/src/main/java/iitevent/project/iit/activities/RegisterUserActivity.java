@@ -108,6 +108,7 @@ public class RegisterUserActivity extends Activity {
      * Background Async Task to Create new product
      * */
     class RegisterNewUser extends AsyncTask<Void, Void, Void> {
+        boolean internetConnection=true;
         /**0
          * Before starting background thread Show Progress Dialog
          * */
@@ -166,6 +167,9 @@ public class RegisterUserActivity extends Activity {
                     e.printStackTrace();
                 }
             }
+            else{
+                internetConnection=false;
+            }
 
             return null;
         }
@@ -176,15 +180,18 @@ public class RegisterUserActivity extends Activity {
         protected void onPostExecute(Void file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
-            if(userExists)
-            {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.RegisteredEmail), Toast.LENGTH_LONG).show();
+            if(internetConnection) {
+                if (userExists) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.RegisteredEmail), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.RegistrationSuccess), Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(i);
+                    finish();
+                }
             }
             else{
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.RegistrationSuccess), Toast.LENGTH_LONG).show();
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
-                finish();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.noConnection), Toast.LENGTH_LONG).show();
             }
 
         }
