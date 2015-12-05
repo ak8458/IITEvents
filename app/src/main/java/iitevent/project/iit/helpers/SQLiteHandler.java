@@ -21,17 +21,18 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "android_api";
+    private static final String DATABASE_NAME = "login_session";
 
     // Login table name
-    private static final String TABLE_USER = "user";
+    private static final String TABLE_USER = "users";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "name";
+    private static final String KEY_NAME = "fullName";
+    private static final String KEY_AGE = "age";
     private static final String KEY_EMAIL = "email";
-    private static final String KEY_UID = "uid";
-    private static final String KEY_CREATED_AT = "created_at";
+    private static final String KEY_PASSWORD = "password";
+
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,8 +43,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_LOGIN_TABLE = "CREATE TABLE " + TABLE_USER + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"
-                + KEY_EMAIL + " TEXT UNIQUE," + KEY_UID + " TEXT,"
-                + KEY_CREATED_AT + " TEXT" + ")";
+                + KEY_AGE + " TEXT," + KEY_EMAIL + " TEXT,"
+                + KEY_PASSWORD + " TEXT" + ")";
         db.execSQL(CREATE_LOGIN_TABLE);
 
         Log.d(TAG, "Database tables created");
@@ -61,26 +62,28 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     /**
      * Storing user details in database
-     * */
-    public void addUser(String name, String email, String uid, String created_at) {
+     */
+    public void addUser(int id, String name, String age, String email, String pwd) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(KEY_ID, id);//ID
         values.put(KEY_NAME, name); // Name
+        values.put(KEY_AGE, age); // Age
         values.put(KEY_EMAIL, email); // Email
-        values.put(KEY_UID, uid); // Email
-        values.put(KEY_CREATED_AT, created_at); // Created At
+        values.put(KEY_PASSWORD, pwd); // pwd
+
 
         // Inserting Row
-        long id = db.insert(TABLE_USER, null, values);
+        long idn = db.insert(TABLE_USER, null, values);
         db.close(); // Closing database connection
 
-        Log.d(TAG, "New user inserted into sqlite: " + id);
+        Log.d(TAG, "New user inserted into sqlite: " + idn);
     }
 
     /**
      * Getting user data from database
-     * */
+     */
     public HashMap<String, String> getUserDetails() {
         HashMap<String, String> user = new HashMap<String, String>();
         String selectQuery = "SELECT  * FROM " + TABLE_USER;
@@ -90,10 +93,11 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // Move to first row
         cursor.moveToFirst();
         if (cursor.getCount() > 0) {
-            user.put("name", cursor.getString(1));
-            user.put("email", cursor.getString(2));
-            user.put("uid", cursor.getString(3));
-            user.put("created_at", cursor.getString(4));
+            user.put("id", cursor.getString(0));
+            user.put("fullName", cursor.getString(1));
+            user.put("age", cursor.getString(2));
+            user.put("email", cursor.getString(3));
+            user.put("password", cursor.getString(4));
         }
         cursor.close();
         db.close();
@@ -105,14 +109,14 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     /**
      * Re crate database Delete all tables and create them again
-     * */
+     */
     public void deleteUsers() {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
-        db.delete(TABLE_USER, null, null);
+        db.delete(TABLE_USER, null,null);
         db.close();
 
         Log.d(TAG, "Deleted all user info from sqlite");
     }
-
 }
+
