@@ -79,6 +79,7 @@ public class EventDetailActivity extends Activity {
      * Background Async Task to register user to event
      * */
     class RegisterUserToEvent extends AsyncTask<Void, Void, Void> {
+        boolean internetConnection=true;
         String setIntent;
         /**0
          * Before starting background thread Show Progress Dialog
@@ -133,6 +134,9 @@ public class EventDetailActivity extends Activity {
                     e.printStackTrace();
                 }
             }
+            else{
+                internetConnection=false;
+            }
 
             return null;
         }
@@ -143,13 +147,16 @@ public class EventDetailActivity extends Activity {
         protected void onPostExecute(Void file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
-            if(errorToast!=null)
-            {
-                Toast.makeText(getApplicationContext(), errorToast, Toast.LENGTH_LONG).show();}
-            else{
-                finish();
+            if(internetConnection) {
+                if (errorToast != null) {
+                    Toast.makeText(getApplicationContext(), errorToast, Toast.LENGTH_LONG).show();
+                } else {
+                    finish();
+                }
             }
-
+            else{
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.noConnection), Toast.LENGTH_LONG).show();
+            }
         }
 
     }
