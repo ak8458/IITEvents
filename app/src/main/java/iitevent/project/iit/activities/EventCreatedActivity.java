@@ -16,9 +16,12 @@ import com.google.zxing.WriterException;
 import iitevent.project.iit.helpers.QRCodeEncoder;
 
 /**
- * Created by demo on 20-11-2015.
+ * Created by Akshay Patil on 20-11-2015.
+ * @author Akshay Patil
+ * This activity is loaded when the user creates and event, this activity generetes a QR code
+ * with the event details embedded in it which can be snapshot and shared
  */
-public class RegistrationSuccessActivity extends Activity {
+public class EventCreatedActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
