@@ -2,30 +2,57 @@ package iitevent.project.iit.activities;
 
 /**
  * Created by Dhruv on 19-Nov-15.
+ * This class is used for login of user
  */
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
+import iitevent.project.iit.activities.RegisterUserActivity;
+import iitevent.project.iit.activities.UserMenuActivity;
+import iitevent.project.iit.helpers.JSONParser;
 import iitevent.project.iit.helpers.SQLiteHandler;
 import iitevent.project.iit.helpers.SessionManager;
 
-
+/**
+ * @author Dhruv V
+ * This class is used to authenticate the user and set the user session and add details to SQLite database.
+ *
+ */
 public class LoginActivity extends Activity {
     private static final String TAG = RegisterUserActivity.class.getSimpleName();
     private Button btnLogin;
+    boolean userVerified;
     private Button btnLinkToRegister;
     private EditText inputEmail;
     private EditText inputPassword;
     private ProgressDialog pDialog;
     private SessionManager session;
     private SQLiteHandler db;
+    JSONParser jsonParser = new JSONParser();
+    String email,password;
+    String fullName;
+    String age;
+    String emailID;
+    String pwd;
+    int userID;
+    boolean falseLogin;
+    // JSON Node names
+    private static final String TAG_ERROR = "error";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,143 +77,145 @@ public class LoginActivity extends Activity {
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
             // User is already logged in. Take him to main activity
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, UserMenuActivity.class);
             startActivity(intent);
             finish();
         }
 
         // Login button Click Event
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View view) {
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
+                userVerified=false;
+                email = inputEmail.getText().toString().trim();
+                password = inputPassword.getText().toString().trim();
 
                 // Check for empty data in the form
                 if (!email.isEmpty() && !password.isEmpty()) {
-                    // login user
-                    //checkLogin(email, password);
-                    if(email.equals("Dhruv") && password.equals("Dhruv"))
-                    {
-                        Intent m = new Intent(getApplicationContext(),
-                                MainActivity.class);
-                        startActivity(m);
+                    if(isEmailValid(email)) {
+                        // login user
+                        new VerifyUser().execute();
                     }
-
+                    else{
+                        // Prompt user to enter credentials
+                        Toast.makeText(getApplicationContext(),
+                                getResources().getString(R.string.InvalidFormatEmailError), Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     // Prompt user to enter credentials
                     Toast.makeText(getApplicationContext(),
-                            "Please enter the credentials!", Toast.LENGTH_LONG)
-                            .show();
+                            getResources().getString(R.string.EnterEmailAndPwdError), Toast.LENGTH_LONG).show();
                 }
             }
-
         });
+
 
         // Link to Register Screen
         btnLinkToRegister.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),
-                        RegisterUserActivity.class);
-                startActivity(i);
-                finish();
+                Intent viewMenu = new Intent(getApplicationContext(),RegisterUserActivity.class);
+                startActivity(viewMenu);
+               // finish();
             }
         });
 
     }
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
 
+    }
     /**
-     * function to verify login details in mysql db
+     * Background Async Task to Create new product
      * */
-    private void checkLogin(final String email, final String password) {
-        /*// Tag used to cancel the request
-        String tag_string_req = "req_login";
-
-        pDialog.setMessage("Logging in ...");
-        showDialog();
-
-        StringRequest strReq = new StringRequest(Method.POST,AppConfig.URL_LOGIN, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "Login Response: " + response.toString());
-                hideDialog();
-
-                try {
-                    JSONObject jObj = new JSONObject(response);
-                    boolean error = jObj.getBoolean("error");
-
-                    // Check for error node in json
-                    if (!error) {
-                        // user successfully logged in
-                        // Create login session
-                        session.setLogin(true);
-
-                        // Now store the user in SQLite
-                        String uid = jObj.getString("uid");
-
-                        JSONObject user = jObj.getJSONObject("user");
-                        String name = user.getString("name");
-                        String email = user.getString("email");
-                        String created_at = user
-                                .getString("created_at");
-
-                        // Inserting row in users table
-                        db.addUser(name, email, uid, created_at);
-
-                        // Launch main activity
-                        Intent intent = new Intent(LoginActivity.this,
-                                MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        // Error in login. Get the error message
-                        String errorMsg = jObj.getString("error_msg");
-                        Toast.makeText(getApplicationContext(),
-                                errorMsg, Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    // JSON error
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
-                hideDialog();
-            }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("email", email);
-                params.put("password", password);
-
-                return params;
-            }
-
-        };
-
-        // Adding request to request queue
-        //AppController.getInstance().addToRequestQueue(strReq, tag_string_req);*/
-    }
-
-    private void showDialog() {
-        if (!pDialog.isShowing())
+    class VerifyUser extends AsyncTask<Void, Void, Void> {
+        /**0
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(LoginActivity.this);
+            pDialog.setMessage("Logging in ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
             pDialog.show();
+        }
+
+        /**
+         * Creating product
+         * */
+        protected Void doInBackground(Void... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("email", email));
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+            JSONObject json = jsonParser.makeHttpRequest("http://"+getResources().getString(R.string.serverIP)+"/IITEvents/verifyCredentials.php","POST", params);
+
+            if(json!=null) {
+                Log.d("Create Response", json.toString());
+
+                // check for success tag
+                try {
+                    falseLogin = json.getBoolean(TAG_ERROR);
+
+                    if (!falseLogin)
+                    {
+                        // successfully created product
+
+                        JSONObject user=json.getJSONObject("user");
+                        userID = json.getInt("uid");
+                        fullName=user.getString("fullName");
+                        age=user.getString("age");
+                        emailID=user.getString("emailID");
+                        pwd=user.getString("pwd");
+                        if(emailID.equals(email) && pwd.equals(password))
+                        {
+                            session.setLogin(true);
+                            db.addUser(userID,fullName,age,emailID,pwd);
+                            userVerified=true;
+                            Intent intent = new Intent(LoginActivity.this, UserMenuActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            else{
+
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.InvalidEmail), Toast.LENGTH_LONG).show();
+            }
+            return null;
+
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         * **/
+        protected void onPostExecute(Void file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+            if(!userVerified)
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.InvalidCredential), Toast.LENGTH_LONG).show();
+            finish();
+
+        }
+
+        private void showDialog() {
+            if (!pDialog.isShowing())
+                pDialog.show();
+        }
+
+        private void hideDialog() {
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+        }
     }
 
-    private void hideDialog() {
-        if (pDialog.isShowing())
-            pDialog.dismiss();
-    }
 }
