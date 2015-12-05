@@ -1,4 +1,4 @@
-package iitevent.project.iit.iitevents;
+package iitevent.project.iit.helpers;
 
 import android.provider.ContactsContract;
 
