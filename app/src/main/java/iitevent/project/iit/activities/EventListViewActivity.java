@@ -27,6 +27,7 @@ import android.widget.ListView;
 import iitevent.project.iit.bean.Event;
 import iitevent.project.iit.helpers.JSONParser;
 import iitevent.project.iit.helpers.ListViewAdapter;
+import iitevent.project.iit.helpers.SQLiteHandler;
 
 /**
  * Created by Akshay Patil on 21-11-2015.
@@ -35,14 +36,14 @@ import iitevent.project.iit.helpers.ListViewAdapter;
 public class EventListViewActivity extends Activity {
     // Progress Dialog
     private ProgressDialog pDialog;
+    private SQLiteHandler db;
 
     // Creating JSON Parser object
     JSONParser jParser = new JSONParser();
 
-    ArrayList<HashMap<String, String>> productsList;
     ListView list;
     ListViewAdapter listviewadapter;
-    List<Event> eventList=new ArrayList<Event>();
+    ArrayList<Event> eventList=new ArrayList<Event>();
 
     // JSON Node names
     private static final String TAG_ERROR = "error";
@@ -70,7 +71,7 @@ public class EventListViewActivity extends Activity {
      * Background Async Task to Load all product by making HTTP Request
      * */
     class LoadAllEvents extends AsyncTask<String, String, String> {
-
+        boolean internetConnection=true;
         /**
          * Before starting background thread Show Progress Dialog
          * */
@@ -93,49 +94,51 @@ public class EventListViewActivity extends Activity {
             // getting JSON string from URL
             JSONObject json = jParser.makeHttpRequest("http://"+getResources().getString(R.string.serverIP)+"/IITEvents/getAllEvents.php", "GET", params);
 
-            // Check your log cat for JSON reponse
-            Log.d("All Events: ", json.toString());
+            if(json!=null) {
+                // Check your log cat for JSON reponse
+                Log.d("All Events: ", json.toString());
 
-            try {
-                // Checking for SUCCESS TAG
-                boolean success = json.getBoolean(TAG_ERROR);
+                try {
+                    // Checking for SUCCESS TAG
+                    boolean success = json.getBoolean(TAG_ERROR);
 
-                if (!success) {
-                    // Events found
-                    // Getting Array of Events
-                    events = json.getJSONArray(TAG_EVENTS);
+                    if (!success) {
+                        // Events found
+                        // Getting Array of Events
+                        events = json.getJSONArray(TAG_EVENTS);
 
-                    // looping through All Events
-                    for (int i = 0; i < events.length(); i++) {
-                        JSONObject c = events.getJSONObject(i);
+                        // looping through All Events
+                        for (int i = 0; i < events.length(); i++) {
+                            JSONObject c = events.getJSONObject(i);
 
-                        // Storing each json item in variable
-                        int eid = Integer.parseInt(c.getString(TAG_EID));
-                        String ename = c.getString(TAG_ENAME);
-                        String edate = c.getString(TAG_EDATE);
-                        String location = c.getString(TAG_ELOC);
-                        String description = c.getString(TAG_EDESC);
-                        try {
-                            DateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                            Date d = f.parse(edate);
-                            DateFormat date = new SimpleDateFormat("MM/dd/yyyy");
-                            DateFormat time = new SimpleDateFormat("hh:mm:ss a");
-                            System.out.println("Date: " + date.format(d));
-                            System.out.println("Time: " + time.format(d));
-                            Event event =new Event(ename,eid, description, location, date.format(d), time.format(d));
-                            eventList.add(event);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            // Storing each json item in variable
+                            int eid = Integer.parseInt(c.getString(TAG_EID));
+                            String ename = c.getString(TAG_ENAME);
+                            String edate = c.getString(TAG_EDATE);
+                            String location = c.getString(TAG_ELOC);
+                            String description = c.getString(TAG_EDESC);
+                            try {
+                                DateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                Date d = f.parse(edate);
+                                DateFormat date = new SimpleDateFormat("MM/dd/yyyy");
+                                DateFormat time = new SimpleDateFormat("hh:mm:ss a");
+                                Event event = new Event(ename, eid, description, location, date.format(d), time.format(d));
+                                eventList.add(event);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
                         }
-
+                    } else {
+                        internetConnection=false;
                     }
-                } else {
-
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
+            else{
 
+            }
             return null;
         }
 
@@ -145,34 +148,39 @@ public class EventListViewActivity extends Activity {
         protected void onPostExecute(String file_url) {
             // dismiss the dialog after getting all products
             pDialog.dismiss();
+            db=new SQLiteHandler(getApplicationContext());
+            if(internetConnection) {
+                db.addAllEvents(eventList);
+                eventList.clear();
+            }
+            eventList=db.getAllEvents();
 
-            list = (ListView) findViewById(R.id.events_listview);
-            listviewadapter = new ListViewAdapter(EventListViewActivity.this, R.layout.event_item,
-                    eventList);
-            list.setAdapter(listviewadapter);
+                list = (ListView) findViewById(R.id.events_listview);
+                listviewadapter = new ListViewAdapter(EventListViewActivity.this, R.layout.event_item,
+                        eventList);
+                 list.setAdapter(listviewadapter);
 
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //declaring and instantiating a new intent to redirect to a new activity
-                    Intent intent = new Intent(EventListViewActivity.this, EventDetailActivity.class);
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        //declaring and instantiating a new intent to redirect to a new activity
+                        Intent intent = new Intent(EventListViewActivity.this, EventDetailActivity.class);
 
-                    //sending the quote detail like image and quote to the new activity
-                    Event eventDetail = listviewadapter.getItem(position);
-                    String eventID = "" + eventDetail.getEventID();
-                    intent.putExtra("eName", eventDetail.getEventName());
-                    intent.putExtra("eDate", eventDetail.getEventDate());
-                    intent.putExtra("eTime", eventDetail.getEventTime());
-                    intent.putExtra("eDesc", eventDetail.getEventDescription());
-                    intent.putExtra("eLoc", eventDetail.getEventLocation());
-                    intent.putExtra("eID", eventID);
-                    //starting the new activity
-                    startActivity(intent);
+                        //sending the quote detail like image and quote to the new activity
+                        Event eventDetail = listviewadapter.getItem(position);
+                        String eventID = "" + eventDetail.getEventID();
+                        intent.putExtra("eName", eventDetail.getEventName());
+                        intent.putExtra("eDate", eventDetail.getEventDate());
+                        intent.putExtra("eTime", eventDetail.getEventTime());
+                        intent.putExtra("eDesc", eventDetail.getEventDescription());
+                        intent.putExtra("eLoc", eventDetail.getEventLocation());
+                        intent.putExtra("eID", eventID);
+                        //starting the new activity
+                        startActivity(intent);
 
 
-                }
-            });
-
+                    }
+                });
 
         }
 
