@@ -2,6 +2,7 @@ package iitevent.project.iit.activities;
 
 /**
  * Created by Dhruv on 19-Nov-15.
+ * This class is used to register a new user
  */
 
 import android.app.Activity;
@@ -34,7 +35,8 @@ public class RegisterUserActivity extends Activity {
     private EditText inputPassword;
     private ProgressDialog pDialog;
 
-    String FullName,Email,Password,Age;
+
+    String fullName,email,password,age;
     JSONParser jsonParser = new JSONParser();
     static final int DATE_DIALOG_ID = 0;
     // JSON Node names
@@ -56,32 +58,30 @@ public class RegisterUserActivity extends Activity {
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
 
-       /* // Session manager
-        session = new SessionManager(getApplicationContext());
-
-        // SQLite database handler
-        db = new SQLiteHandler(getApplicationContext());
-
-        // Check if user is already logged in or not
-        if (session.isLoggedIn()) {
-            // User is already logged in. Take him to main activity
-            Intent intent = new Intent(RegisterActivity.this,MainActivity.class);
-            startActivity(intent);
-            finish();
-        }*/
-
         // Register Button Click event
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                String name = inputFullName.getText().toString().trim();
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
-                String age=inputAge.getText().toString().trim();
+                fullName = inputFullName.getText().toString().trim();
+                age=inputAge.getText().toString().trim();
+                email=inputEmail.getText().toString().trim();
+                password=inputPassword.getText().toString().trim();
 
-                if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
-                    new RegisterNewUser().execute();
+
+                if (!fullName.isEmpty() && !email.isEmpty() && !password.isEmpty() && !age.isEmpty()) {
+                    if(isEmailValid(email)) {
+                        if(age.length()<4&&Integer.parseInt(age)<150) {
+                            new RegisterNewUser().execute();
+
+                           }
+                        else {
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.InvalidAge), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.ValidMailError), Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    Toast.makeText(getApplicationContext(),"Please enter your details!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.EnterAllDetailsMsg), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -99,14 +99,19 @@ public class RegisterUserActivity extends Activity {
 
     }
 
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+
+    }
+
     /**
      * Background Async Task to Create new product
      * */
     class RegisterNewUser extends AsyncTask<Void, Void, Void> {
-        String setIntent;
         /**0
          * Before starting background thread Show Progress Dialog
          * */
+        private Boolean userExists;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -123,10 +128,10 @@ public class RegisterUserActivity extends Activity {
         protected Void doInBackground(Void... args) {
             // Building Parameters
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("uname", FullName));
-            params.add(new BasicNameValuePair("uage",Age));
-            params.add(new BasicNameValuePair("uemailID", Email));
-            params.add(new BasicNameValuePair("upwd", Password));
+            params.add(new BasicNameValuePair("uname", fullName));
+            params.add(new BasicNameValuePair("uage",age));
+            params.add(new BasicNameValuePair("uemailID", email));
+            params.add(new BasicNameValuePair("upwd", password));
 
             // getting JSON Object
             // Note that create product url accepts POST method
@@ -144,19 +149,16 @@ public class RegisterUserActivity extends Activity {
                         // successfully created product
                         String userID="User ID: "+json.getInt("uid");
                         JSONObject user=json.getJSONObject("user");
-                        String userName="Full Name: "+user.getString("uname");
+                        String userName="Full Name: "+user.getString("fullName");
                         String userAge="Age: "+user.getString("age");
-                        String userEmail="Email: "+user.getString("email");
+                        String userEmail="Email: "+user.getString("emailID");
                         String userPwd="Pwd: "+user.getString("pwd");
-                        setIntent=userID+"\n"+userName +"\n"+userAge +"\n"+userPwd;
-                        Intent toSuccessEvent = new Intent(getApplicationContext(), LoginActivity.class);
-                        toSuccessEvent.putExtra("qrInput",setIntent);
-                        startActivity(toSuccessEvent);
 
-                        // closing this screen
-                        finish();
+                        userExists=false;
+
                     } else {
                         // failed to create event
+                        userExists=true;
                     }
                 }
                 catch (JSONException e)
@@ -174,6 +176,16 @@ public class RegisterUserActivity extends Activity {
         protected void onPostExecute(Void file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
+            if(userExists)
+            {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.RegisteredEmail), Toast.LENGTH_LONG).show();
+            }
+            else{
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.RegistrationSuccess), Toast.LENGTH_LONG).show();
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+                finish();
+            }
 
         }
 
