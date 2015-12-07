@@ -1,7 +1,9 @@
 package iitevent.project.iit.helpers;
 
 /**
- * Created by demo on 21-11-2015.
+ * Created by Akshay Patil on 21-11-2015.
+ * 1.	this class is used to generate a time picker fragment on click of the
+ * time Editview and also set the user selected content to the Editview
  */
 import android.app.TimePickerDialog;
 import android.os.Bundle;

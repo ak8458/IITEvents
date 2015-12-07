@@ -18,12 +18,32 @@
     <string name="welcome">Welcome</string>
     <string name="btn_logout">LOGOUT</string>
     <string name="name">Fullname</string>
-    <string name="create_Event">Create Event</string>
+    <string name="create_Event">CREATE EVENT</string>
     <string name="action_settings">Settings</string>
     <string name="successEventMessage">Event Registered!! Share QR</string>
     <string name="serverIP">192.168.1.109</string>
     <string name="age">Age</string>
-    <string name="going">Going!!</string>
-
-
+    <string name="going">GOING!!</string>
+    <string name="login_page">Login</string>
+    <string name="events_page">Events</string>
+    <string name="event_created">Event Created!!</string>
+    <string name="user_reg_page">Register</string>
+    <string name="viewmore">More Events</string>
+    <string name="goingMessage">You have been Registered!!</string>
+    <string name="viewevents">VIEW EVENTS</string>
+    <string name="enterEventName">Please enter Event Name</string>
+    <string name="enterEventTime">Please enter Time for the event</string>
+    <string name="enterDescription">Please enter Event Description</string>
+    <string name="enterEventDate">Please enter Event Date</string>
+    <string name="enterEventLocation">Please enter Event Location</string>
+    <string name="RegisteredEmail">Sorry this email address is already registered</string>
+    <string name="RegistrationSuccess">You have been successfully registered!! Please login</string>
+    <string name="InvalidAge">The age you have entered is invalid</string>
+    <string name="ValidMailError">Please enter Valid Email!</string>
+    <string name="EnterAllDetailsMsg">Please enter All the details!</string>
+    <string name="InvalidCredential">Credentials invalid</string>
+    <string name="InvalidEmail">Invalid Email ID!</string>
+    <string name="InvalidFormatEmailError">the email address entered is not in a valid format</string>
+    <string name="EnterEmailAndPwdError">Please enter value for both email and password</string>
+    <string name="noConnection">You are not Connected to the Internet</string>
 </resources>

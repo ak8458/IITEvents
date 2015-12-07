@@ -2,6 +2,10 @@ package iitevent.project.iit.helpers;
 
 import android.provider.ContactsContract;
 
+/**
+ * @author Akshay Patil
+ * This class is used to define the type of content which is set to the QR code.
+ */
 public final class Contents {
     private Contents() {
     }
@@ -22,25 +26,10 @@ public final class Contents {
         public static final String SMS = "SMS_TYPE";
 
 
-        //  A contact. Send a request to encode it as follows:
-        //  <p/>
-        //  import android.provider.Contacts;
-        //  <p/>
-        //  Intent intent = new Intent(Intents.Encode.ACTION); intent.putExtra(Intents.Encode.TYPE,
-        //  CONTACT); Bundle bundle = new Bundle(); bundle.putString(Contacts.Intents.Insert.NAME,
-        //  "Jenny"); bundle.putString(Contacts.Intents.Insert.PHONE, "8675309");
-        //  bundle.putString(Contacts.Intents.Insert.EMAIL, "jenny@the80s.com");
-        //  bundle.putString(Contacts.Intents.Insert.POSTAL, "123 Fake St. San Francisco, CA 94102");
-        //  intent.putExtra(Intents.Encode.DATA, bundle);
 
         public static final String CONTACT = "CONTACT_TYPE";
 
 
-        // A geographic location. Use as follows:
-        // Bundle bundle = new Bundle();
-        // bundle.putFloat("LAT", latitude);
-        // bundle.putFloat("LONG", longitude);
-        // intent.putExtra(Intents.Encode.DATA, bundle);
 
         public static final String LOCATION = "LOCATION_TYPE";
 

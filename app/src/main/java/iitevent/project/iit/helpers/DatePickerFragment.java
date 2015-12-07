@@ -2,7 +2,8 @@ package iitevent.project.iit.helpers;
 
 
 /**
- * Created by demo on 21-11-2015.
+ * Created by Akshay Patil on 21-11-2015.
+ * this class is used to generate a date picker fragment on click of the date Editview and also set the user selected content to the Editview
  */
         import android.app.DatePickerDialog;
         import android.os.Bundle;
@@ -41,6 +42,6 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         //Set a message for user
 
         //Display the user changed time on TextView
-        tv.setText(String.valueOf(year)+ "-" + String.valueOf(monthOfYear)+"-"+String.valueOf(dayOfMonth));
+        tv.setText(String.valueOf(year)+ "-" + String.valueOf(monthOfYear+1)+"-"+String.valueOf(dayOfMonth));
     }
 }

@@ -12,7 +12,9 @@ public class Event {
     private String eventLocation;
     private String eventDate;
     private String eventTime;
+    public Event(){
 
+    }
     public String getEventName() {
         return eventName;
     }

@@ -16,7 +16,7 @@ import iitevent.project.iit.bean.Event;
 
 /**
  * @author Akshay Patil
- * Custom adapter to display custom list view and perform operations such as select and deleted items in the list view.
+ * Custom adapter to display custom list view and perform operations such as select items in the list view.
  */
 public class ListViewAdapter extends ArrayAdapter<Event> {
     // Declare Variables
