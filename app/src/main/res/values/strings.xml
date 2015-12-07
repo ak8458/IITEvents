@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">IIT Events</string>
-
-
-
     <string name="hint_email">Email</string>
     <string name="hint_ename">Event name</string>
     <string name="hint_edate">Event date</string>
