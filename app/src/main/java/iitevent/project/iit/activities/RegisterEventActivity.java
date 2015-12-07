@@ -100,9 +100,9 @@ public class RegisterEventActivity extends Activity{
             @Override
             public void onClick(View v) {
                 boolean createEvent=true;
-                if(!eventName.getText().toString().trim().isEmpty() || !eventTime.getText().toString().trim().isEmpty()
-                        || !eventDescription.getText().toString().trim().isEmpty() || !eventDate.getText().toString().trim().isEmpty()
-                        || !eventLocation.getText().toString().trim().isEmpty()){
+                if(eventName.getText().toString().trim().isEmpty() || eventTime.getText().toString().trim().isEmpty()
+                        || eventDescription.getText().toString().trim().isEmpty() || eventDate.getText().toString().trim().isEmpty()
+                        || eventLocation.getText().toString().trim().isEmpty()){
                     //eventName.setError("Please enter Event Name");
                     Toast.makeText(getApplicationContext(),getResources().getText(R.string.EnterAllDetailsMsg), Toast.LENGTH_LONG).show();
                     createEvent=false;
@@ -125,6 +125,8 @@ public class RegisterEventActivity extends Activity{
      * Background Async Task to Create new product
      * */
     class RegisterNewEvent extends AsyncTask<Void, Void, Void> {
+        boolean internetConnection=true;
+        String eventID,eventdate,eventName,eventLocation,eventDec;
         String setIntent;
         /**0
          * Before starting background thread Show Progress Dialog
@@ -170,24 +172,22 @@ public class RegisterEventActivity extends Activity{
 
                     if (!error) {
                         // successfully created product
-                        String eventID="Event ID: "+json.getInt("eid");
+                        eventID="Event ID: "+json.getInt("eid");
                         JSONObject event=json.getJSONObject("event");
-                        String eventdate="Date: "+event.getString("edate");
-                        String eventName="Event Name: "+event.getString("ename");
-                        String eventLocation="Location: "+event.getString("location");
-                        String eventDec="About: "+event.getString("description");
-                        setIntent=eventID+"\n"+eventName +"\n"+eventdate +"\n"+eventLocation +"\n"+eventDec;
-                        Intent toSuccessEvent = new Intent(getApplicationContext(), EventCreatedActivity.class);
-                        toSuccessEvent.putExtra("qrInput",setIntent);
-                        startActivity(toSuccessEvent);
-                        // closing this screen
-                        finish();
+                        eventdate="Date: "+event.getString("edate");
+                        eventName="Event Name: "+event.getString("ename");
+                        eventLocation="Location: "+event.getString("location");
+                        eventDec="About: "+event.getString("description");
+
                     } else {
                         // failed to create event
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }else{
+                internetConnection=false;
             }
 
             return null;
@@ -199,6 +199,17 @@ public class RegisterEventActivity extends Activity{
         protected void onPostExecute(Void file_url) {
             // dismiss the dialog once done
             pDialog.dismiss();
+            if(internetConnection){
+                setIntent=eventID+"\n"+eventName +"\n"+eventdate +"\n"+eventLocation +"\n"+eventDec;
+                Intent toSuccessEvent = new Intent(getApplicationContext(), EventCreatedActivity.class);
+                toSuccessEvent.putExtra("qrInput",setIntent);
+                startActivity(toSuccessEvent);
+                // closing this screen
+                finish();
+            }
+            else{
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.noConnection), Toast.LENGTH_LONG).show();
+            }
 
 
         }

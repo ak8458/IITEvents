@@ -19,6 +19,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,27 +88,29 @@ public class LoginActivity extends Activity {
         btnLogin.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View view) {
-                userVerified=false;
-                email = inputEmail.getText().toString().trim();
-                password = inputPassword.getText().toString().trim();
 
-                // Check for empty data in the form
-                if (!email.isEmpty() && !password.isEmpty()) {
-                    if(isEmailValid(email)) {
-                        // login user
-                        new VerifyUser().execute();
-                    }
-                    else{
+                    userVerified = false;
+                    email = inputEmail.getText().toString().trim();
+                    password = inputPassword.getText().toString().trim();
+
+                    // Check for empty data in the form
+                    if (!email.isEmpty() && !password.isEmpty()) {
+                        if (isEmailValid(email)) {
+                            // login user
+                            new VerifyUser().execute();
+                        } else {
+                            // Prompt user to enter credentials
+                            Toast.makeText(getApplicationContext(),
+                                    getResources().getString(R.string.InvalidFormatEmailError), Toast.LENGTH_LONG).show();
+                        }
+                    } else {
                         // Prompt user to enter credentials
                         Toast.makeText(getApplicationContext(),
-                                getResources().getString(R.string.InvalidFormatEmailError), Toast.LENGTH_LONG).show();
+                                getResources().getString(R.string.EnterEmailAndPwdError), Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    // Prompt user to enter credentials
-                    Toast.makeText(getApplicationContext(),
-                            getResources().getString(R.string.EnterEmailAndPwdError), Toast.LENGTH_LONG).show();
                 }
-            }
+
+
         });
 
 
@@ -125,6 +129,8 @@ public class LoginActivity extends Activity {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
 
     }
+
+
     /**
      * Background Async Task to Create new product
      * */

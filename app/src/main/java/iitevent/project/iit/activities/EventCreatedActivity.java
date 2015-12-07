@@ -8,11 +8,11 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import iitevent.project.iit.helpers.Contents;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
+import iitevent.project.iit.helpers.Contents;
 import iitevent.project.iit.helpers.QRCodeEncoder;
 
 /**
